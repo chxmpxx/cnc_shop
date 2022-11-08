@@ -1,5 +1,8 @@
 import 'package:cnc_shop/themes/color.dart';
+import 'package:cnc_shop/widgets/input_decoration.dart';
+import 'package:cnc_shop/widgets/main_btn_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -10,6 +13,9 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
+  final formKey = GlobalKey<FormState>();
+  String? productCategory = 'Pen', productName, productPrice,
+  productQuantity, productDescription;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +50,173 @@ class _AddProductScreenState extends State<AddProductScreen> {
             icon: SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite,)
           ),
         ],
+      ),
+      body: ListView(
+        children: [
+          InkWell(
+            onTap: (){
+              FocusScope.of(context).unfocus();
+            },
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  CreateProductCategory(),
+                  CreateProductName(),
+                  CreateProductPrice(),
+                  CreateProductQuantity(),
+                  CreateProductDescription()
+                ],
+              )
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: InkWell(
+                onTap: (){
+                  if(formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                  }
+                },
+                child: MainBtnWidget(
+                  colorBtn: kColorsPurple,
+                  textBtn: 'Confirm',
+                  isTransparent: false,
+                  haveIcon: false
+                ),
+              ),
+            )
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget CreateProductName() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        autofocus: false,
+        style: Theme.of(context).textTheme.subtitle1,
+        validator: (value) {
+          if(value!.isEmpty) {
+            return "Please enter product name";
+          }else{
+            return null;
+          }
+        },
+        onChanged: (value) {
+          productName = value;
+        },
+        decoration: InputDecorationWidget(context, "Name")
+      ),
+    );
+  }
+  Widget CreateProductPrice() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
+        autofocus: false,
+        style: Theme.of(context).textTheme.subtitle1,
+        validator: (value) {
+          if(value!.isEmpty) {
+            return "Please enter product price";
+          }else{
+            return null;
+          }
+        },
+        onChanged: (value) {
+          productPrice = value;
+        },
+        decoration: InputDecorationWidget(context, "Price")
+      ),
+    );
+  }
+
+  Widget CreateProductCategory() {
+    List<String> category = ['Pen', 'Book', 'Paper', 'Eraser', 'Marker', 'Folder'];
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          contentPadding: new EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          border: new OutlineInputBorder(
+            borderRadius: new BorderRadius.circular(10),
+            borderSide:  BorderSide(color: kColorsGrey, width: 1),
+          ),
+          errorStyle: Theme.of(context).textTheme.bodyText2
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            value: productCategory,
+            icon: SvgPicture.asset('assets/icons/down.svg', color: kColorsGrey),
+            elevation: 3,
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: kColorsPurple),
+            items: category.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                productCategory = value.toString();
+              });
+            }
+          ),
+        ),
+      )
+    );
+  }
+
+  Widget CreateProductQuantity() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
+        autofocus: false,
+        style: Theme.of(context).textTheme.subtitle1,
+        validator: (value) {
+          if(value!.isEmpty) {
+            return "Please enter product quantity";
+          }else{
+            return null;
+          }
+        },
+        onChanged: (value) {
+          productQuantity = value;
+        },
+        decoration: InputDecorationWidget(context, "Quantity")
+      ),
+    );
+  }
+  Widget CreateProductDescription() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        autofocus: false,
+        style: Theme.of(context).textTheme.subtitle1,
+        validator: (value) {
+          if(value!.isEmpty) {
+            return "Please enter product description";
+          }else{
+            return null;
+          }
+        },
+        onChanged: (value) {
+          productDescription = value;
+        },
+        decoration: InputDecorationWidget(context, "Description")
       ),
     );
   }

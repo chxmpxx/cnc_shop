@@ -64,22 +64,27 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: const EdgeInsets.all(6),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AspectRatio(
-                    aspectRatio: 1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: kColorsRed
+              child: InkWell(
+                onTap: (){
+                  Navigator.pushNamed(context, '/product-info');
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: kColorsRed
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 12,),
-                  Text('Product name', style: Theme.of(context).textTheme.subtitle1,),
-                  SizedBox(height: 6,),
-                  Text('\$price', style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: kColorsPurple),)
-                ],
+                    SizedBox(height: 12,),
+                    Text('Product name', style: Theme.of(context).textTheme.subtitle1,),
+                    SizedBox(height: 6,),
+                    Text('\$price', style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: kColorsPurple),)
+                  ],
+                ),
               ),
             );
           }
