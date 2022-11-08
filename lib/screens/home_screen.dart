@@ -37,7 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
         // สร้างปุ่มด้านขวา
         actions: [
           IconButton(
-            onPressed: (){},
+            onPressed: (){
+              Navigator.pushNamed(context, '/add-product');
+            },
+            // icon: Icon(Icons.add, color: Colors.black,),
             icon: SvgPicture.asset('assets/icons/add.svg')
           ),
           IconButton(
