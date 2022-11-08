@@ -50,6 +50,38 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      body: Padding(
+        padding: const EdgeInsets.all(6),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.75
+          ),
+          itemCount: 10,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.all(6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: kColorsRed
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 12,),
+                  Text('Product name', style: Theme.of(context).textTheme.subtitle1,),
+                  SizedBox(height: 6,),
+                  Text('\$price', style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: kColorsPurple),)
+                ],
+              ),
+            );
+          }
+        ),
+      ),
     );
   }
 }
