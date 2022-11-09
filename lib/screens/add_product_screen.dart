@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:cnc_shop/themes/color.dart';
 import 'package:cnc_shop/widgets/input_decoration.dart';
 import 'package:cnc_shop/widgets/main_btn_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddProductScreen extends StatefulWidget {
   AddProductScreen({Key? key}) : super(key: key);
@@ -14,8 +17,11 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   final formKey = GlobalKey<FormState>();
-  String? productCategory = 'Pen', productName, productPrice,
-  productQuantity, productDescription;
+  String? productCategory = 'Pen', productName, productPrice, productQuantity, productDescription;
+
+  File? imageFile;
+  final picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +67,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
               key: formKey,
               child: Column(
                 children: [
+                  InkWell(
+                    onTap: (){
+                      showButtomSheet(context);
+                    },
+                    child: Container(
+                      width: 153,
+                      height: 153,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        color: kColorsRed
+                      ),
+                    ),
+                  ),
                   CreateProductCategory(),
                   CreateProductName(),
                   CreateProductPrice(),
@@ -220,4 +239,57 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ),
     );
   }
+
+  Future<void> showButtomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          child: Wrap(
+            children: [
+              ListTile(
+                onTap: (){
+                  openGallery(context);
+                },
+                leading: SvgPicture.asset('assets/icons/gallery.svg', color: kColorsPurple,),
+                title: Text('Gallery', style: Theme.of(context).textTheme.subtitle1),
+              ),
+              ListTile(
+                onTap: (){
+                  openCamera(context);
+                },
+                leading: SvgPicture.asset('assets/icons/camera.svg', color: kColorsPurple,),
+                title: Text('Camera', style: Theme.of(context).textTheme.subtitle1),
+              )
+            ],
+          ),
+        );
+      }
+    );
+  }
+
+  openGallery(BuildContext context) async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if(pickedFile != null) {
+        imageFile = File(pickedFile.path);
+      }else {
+        print('No Image selected');
+      }
+    });
+    Navigator.of(context).pop();
+  }
+
+  openCamera(BuildContext context) async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    setState(() {
+      if(pickedFile != null) {
+        imageFile = File(pickedFile.path);
+      }else {
+        print('No Image selected');
+      }
+    });
+    Navigator.of(context).pop();
+  }
+
 }
