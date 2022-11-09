@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cnc_shop/themes/color.dart';
 import 'package:cnc_shop/widgets/coin_menu_widget.dart';
 import 'package:cnc_shop/widgets/main_btn_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -12,6 +15,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final User? user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,21 +27,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         toolbarHeight: 60,
         leading: IconButton(
           icon: SvgPicture.asset('assets/icons/back.svg', color: kColorsWhite),
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
           },
         ),
         actions: [
           IconButton(
-            onPressed: (){},
-            icon: SvgPicture.asset('assets/icons/msg.svg', color: kColorsWhite)
-          ),
+              onPressed: () {},
+              icon: SvgPicture.asset('assets/icons/msg.svg',
+                  color: kColorsWhite)),
           IconButton(
-            onPressed: (){
-              Navigator.pushNamed(context, '/profile');
-            },
-            icon: SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite)
-          )
+              onPressed: () {
+                Navigator.pushNamed(context, '/profile');
+              },
+              icon:
+                  SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite))
         ],
       ),
       body: SingleChildScrollView(
@@ -46,14 +51,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             profileAndCoin(),
             setting(),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: InkWell(
-                onTap: (){
-                  Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
-                },
-                child: MainBtnWidget(colorBtn: kColorsRed, textBtn: 'Logout', isTransparent: false, haveIcon: false)
-              )
-            )
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: InkWell(
+                    onTap: () {
+                      logoutHandle(context: context);
+                    },
+                    child: MainBtnWidget(
+                        colorBtn: kColorsRed,
+                        textBtn: 'Logout',
+                        isTransparent: false,
+                        haveIcon: false)))
           ],
         ),
       ),
@@ -72,9 +79,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           height: 180,
           width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
-            color: kColorsPurple
-          ),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+              color: kColorsPurple),
         ),
         Padding(
           padding: const EdgeInsets.all(20),
@@ -84,18 +90,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 height: 100,
                 width: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: kColorsCream
-                ),
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: kColorsCream),
               ),
               SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Hi! Username', style: Theme.of(context).textTheme.headline3),
+                  Text('Hi! Username',
+                      style: Theme.of(context).textTheme.headline3),
                   SizedBox(height: 10),
-                  Text('xxx@gmail.com', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: kColorsWhite, fontFamily: 'Inter')),
+                  Text('Email: ${user?.email ?? 'Unknown Email'}',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w400,
+                          color: kColorsWhite,
+                          fontFamily: 'Inter')),
                 ],
               )
             ],
@@ -114,29 +124,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: 155,
                     width: MediaQuery.of(context).size.width - 40,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      color: kColorsWhite,
-                      boxShadow: [
-                        BoxShadow(
-                          color: kColorsBlack.withOpacity(0.25),
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: Offset(0, 4),
-                        ),
-                      ]
-                    ),
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        color: kColorsWhite,
+                        boxShadow: [
+                          BoxShadow(
+                            color: kColorsBlack.withOpacity(0.25),
+                            spreadRadius: 0,
+                            blurRadius: 4,
+                            offset: Offset(0, 4),
+                          ),
+                        ]),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('My Coin', style: Theme.of(context).textTheme.headline4),
-                        Text('\$ coin', style: Theme.of(context).textTheme.subtitle1),
+                        Text('My Coin',
+                            style: Theme.of(context).textTheme.headline4),
+                        Text('\$ coin',
+                            style: Theme.of(context).textTheme.subtitle1),
                       ],
                     ),
                     Padding(
@@ -151,27 +163,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Expanded(
                           child: InkWell(
-                            onTap: (){
-                              Navigator.pushNamed(context, '/withdraw');
-                            },
-                            child: CoinMenuWidget(iconBtn: 'assets/icons/withdraw.svg', textBtn: 'Withdraw')
-                          ),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/withdraw');
+                              },
+                              child: CoinMenuWidget(
+                                  iconBtn: 'assets/icons/withdraw.svg',
+                                  textBtn: 'Withdraw')),
                         ),
                         Expanded(
                           child: InkWell(
-                            onTap: (){
-                              Navigator.pushNamed(context, '/top-up');
-                            },
-                            child: CoinMenuWidget(iconBtn: 'assets/icons/top_up.svg', textBtn: 'Top Up')
-                          ),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/top-up');
+                              },
+                              child: CoinMenuWidget(
+                                  iconBtn: 'assets/icons/top_up.svg',
+                                  textBtn: 'Top Up')),
                         ),
                         Expanded(
                           child: InkWell(
-                            onTap: (){
-                              Navigator.pushNamed(context, '/transaction');
-                            },
-                            child: CoinMenuWidget(iconBtn: 'assets/icons/transaction.svg', textBtn: 'Transaction')
-                          ),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/transaction');
+                              },
+                              child: CoinMenuWidget(
+                                  iconBtn: 'assets/icons/transaction.svg',
+                                  textBtn: 'Transaction')),
                         ),
                       ],
                     )
@@ -184,7 +199,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
-
 
   // Create Setting Menu
   Widget setting() {
@@ -211,7 +225,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               // TO DO: Create setting menu
-              
             ],
           ),
         )
@@ -219,4 +232,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> logoutHandle({required BuildContext context}) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    } on FirebaseAuthException catch (e) {
+      log(e.message!);
+    }
+  }
 }
