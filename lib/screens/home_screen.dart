@@ -48,7 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: SvgPicture.asset('assets/icons/msg.svg')
           ),
           IconButton(
-            onPressed: (){},
+            onPressed: (){
+              Navigator.pushNamed(context, '/profile');
+            },
             icon: SvgPicture.asset('assets/icons/me.svg')
           ),
         ],

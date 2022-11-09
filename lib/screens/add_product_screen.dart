@@ -52,7 +52,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
             icon: SvgPicture.asset('assets/icons/msg.svg', color: kColorsWhite,)
           ),
           IconButton(
-            onPressed: (){},
+            onPressed: (){
+              Navigator.pushNamed(context, '/profile');
+            },
             icon: SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite,)
           ),
         ],
@@ -67,16 +69,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
               key: formKey,
               child: Column(
                 children: [
-                  InkWell(
-                    onTap: (){
-                      showButtomSheet(context);
-                    },
-                    child: Container(
-                      width: 153,
-                      height: 153,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        color: kColorsRed
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: InkWell(
+                      onTap: (){
+                        showButtomSheet(context);
+                      },
+                      // (เงื่อนไข) ? คำสั่ง1 : คำสั่ง2
+                      child: imageFile != null ?
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.file(
+                          imageFile!,
+                          width: 153,
+                          height: 153,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                      : Container(
+                        width: 153,
+                        height: 153,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          color: kColorsRed
+                        ),
                       ),
                     ),
                   ),

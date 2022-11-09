@@ -44,7 +44,9 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
             icon: SvgPicture.asset('assets/icons/msg.svg', color: kColorsPurple,)
           ),
           IconButton(
-            onPressed: (){},
+            onPressed: (){
+              Navigator.pushNamed(context, '/profile');
+            },
             icon: SvgPicture.asset('assets/icons/me.svg', color: kColorsPurple,)
           ),
         ],
