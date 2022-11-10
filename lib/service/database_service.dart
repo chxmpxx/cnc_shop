@@ -21,5 +21,10 @@ class DatabaseService {
     return user;
   }
 
-  Future<void> updateUserFromUid({required uid, required User user}) async {}
+  Future<void> updateUserFromUid({required uid, required User user}) async {
+    final docUser = _firebaseStore.collection('users').doc(uid);
+    final newUserInfo = user.toMap();
+
+    docUser.set(newUserInfo);
+  }
 }

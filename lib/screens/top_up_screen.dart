@@ -1,8 +1,13 @@
+import 'package:cnc_shop/model/user_model.dart';
+import 'package:cnc_shop/service/auth_service.dart';
+import 'package:cnc_shop/service/database_service.dart';
 import 'package:cnc_shop/themes/color.dart';
+import 'package:cnc_shop/utils/showSnackBar.dart';
 import 'package:cnc_shop/widgets/coin_btn_widget.dart';
 import 'package:cnc_shop/widgets/main_btn_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class TopUpScreen extends StatefulWidget {
   TopUpScreen({Key? key}) : super(key: key);
@@ -14,8 +19,18 @@ class TopUpScreen extends StatefulWidget {
 class _TopUpScreenState extends State<TopUpScreen> {
   int topup = 0;
   List<int> amountList = [100, 300, 500, 700, 1000, 2000];
+  User? user;
+
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    authService.currentUser().then((currentUser) {
+      if (!mounted) return;
+      setState(() {
+        user = currentUser;
+      });
+    });
     return Scaffold(
       backgroundColor: kColorsCream,
       appBar: AppBar(
@@ -62,8 +77,33 @@ class _TopUpScreenState extends State<TopUpScreen> {
                       content: Text('Top up ${topup} coin.'),
                       actionsAlignment: MainAxisAlignment.spaceAround,
                       actions: <Widget>[
-                        TextButton(onPressed: () {}, child: Text('Cancel')),
-                        TextButton(onPressed: () {}, child: Text('Ok')),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, 'Cancel');
+                            },
+                            child: Text('Cancel')),
+                        TextButton(
+                            onPressed: () {
+                              user!.coin = user!.coin! + topup;
+
+                              final databaseService =
+                                  Provider.of<DatabaseService>(context,
+                                      listen: false);
+
+                              databaseService
+                                  .updateUserFromUid(
+                                      uid: user!.uid, user: user!)
+                                  .then((value) {
+                                // success state
+                                showSnackBar('success',
+                                    backgroundColor: Colors.green);
+                              }).catchError((e) {
+                                //handle error
+                                showSnackBar(e, backgroundColor: Colors.red);
+                              });
+                              Navigator.pop(context, 'Ok');
+                            },
+                            child: Text('Ok')),
                       ],
                     ),
                   );
