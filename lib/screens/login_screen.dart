@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:cnc_shop/service/auth_service.dart';
 import 'package:cnc_shop/themes/color.dart';
 import 'package:cnc_shop/widgets/input_decoration.dart';
 import 'package:cnc_shop/widgets/main_btn_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -184,6 +186,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> loginHandle({required BuildContext context}) async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
@@ -194,8 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
               )));
 
       try {
-        final userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email!, password: password!);
+        await authService.signInWithEmailAndPassword(
+            email: email, password: password);
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/home', (route) => false);
       } on FirebaseAuthException catch (e) {
