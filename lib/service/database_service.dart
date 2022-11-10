@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cnc_shop/model/product_model.dart';
 import 'package:cnc_shop/model/user_model.dart';
 
 class DatabaseService {
@@ -26,5 +27,14 @@ class DatabaseService {
     final newUserInfo = user.toMap();
 
     docUser.set(newUserInfo);
+  }
+
+  Future<List<Product?>> getFutureListProduct() async {
+    final snapshot = await _firebaseStore.collection('products').get();
+
+    return snapshot.docs
+        .map((doc) => Product.fromMap(userMap: doc.data()))
+        .toList();
+
   }
 }
