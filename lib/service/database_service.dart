@@ -20,4 +20,6 @@ class DatabaseService {
     final user = User.fromMap(userMap: userInfo!);
     return user;
   }
+
+  Future<void> updateUserFromUid({required uid, required User user}) async {}
 }

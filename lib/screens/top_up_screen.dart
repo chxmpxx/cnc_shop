@@ -12,6 +12,8 @@ class TopUpScreen extends StatefulWidget {
 }
 
 class _TopUpScreenState extends State<TopUpScreen> {
+  int topup = 0;
+  List<int> amountList = [100, 300, 500, 700, 1000, 2000];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,21 +25,21 @@ class _TopUpScreenState extends State<TopUpScreen> {
         toolbarHeight: 60,
         leading: IconButton(
           icon: SvgPicture.asset('assets/icons/back.svg', color: kColorsWhite),
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
           },
         ),
         actions: [
           IconButton(
-            onPressed: (){},
-            icon: SvgPicture.asset('assets/icons/msg.svg', color: kColorsWhite)
-          ),
+              onPressed: () {},
+              icon: SvgPicture.asset('assets/icons/msg.svg',
+                  color: kColorsWhite)),
           IconButton(
-            onPressed: (){
-              Navigator.pushNamed(context, '/profile');
-            },
-            icon: SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite)
-          )
+              onPressed: () {
+                Navigator.pushNamed(context, '/profile');
+              },
+              icon:
+                  SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite))
         ],
       ),
       body: Stack(
@@ -47,15 +49,31 @@ class _TopUpScreenState extends State<TopUpScreen> {
             width: MediaQuery.of(context).size.width,
           ),
           topUp(),
+          Positioned(top: 325, child: inputAmount()),
           Positioned(
-            top: 325,
-            child: inputAmount()
-          ),
-          Positioned(
-            bottom: 20,
-            width: MediaQuery.of(context).size.width,
-            child: MainBtnWidget(colorBtn: kColorsPurple, textBtn: 'Top Up', isTransparent: true, haveIcon: false)
-          )
+              bottom: 20,
+              width: MediaQuery.of(context).size.width,
+              child: InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Top up'),
+                      content: Text('Top up ${topup} coin.'),
+                      actionsAlignment: MainAxisAlignment.spaceAround,
+                      actions: <Widget>[
+                        TextButton(onPressed: () {}, child: Text('Cancel')),
+                        TextButton(onPressed: () {}, child: Text('Ok')),
+                      ],
+                    ),
+                  );
+                },
+                child: MainBtnWidget(
+                    colorBtn: kColorsPurple,
+                    textBtn: 'Top Up',
+                    isTransparent: true,
+                    haveIcon: false),
+              ))
         ],
       ),
     );
@@ -73,9 +91,8 @@ class _TopUpScreenState extends State<TopUpScreen> {
           height: 180,
           width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
-            color: kColorsPurple
-          ),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+              color: kColorsPurple),
         ),
         Positioned(
           top: 50,
@@ -88,25 +105,26 @@ class _TopUpScreenState extends State<TopUpScreen> {
                   height: 240,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    color: kColorsWhite,
-                    boxShadow: [
-                      BoxShadow(
-                        color: kColorsBlack.withOpacity(0.25),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                      ),
-                    ]
-                  ),
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: kColorsWhite,
+                      boxShadow: [
+                        BoxShadow(
+                          color: kColorsBlack.withOpacity(0.25),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: Offset(0, 4),
+                        ),
+                      ]),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Top Up value', style: Theme.of(context).textTheme.headline4),
+                    Text('Top Up value',
+                        style: Theme.of(context).textTheme.headline4),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Container(
@@ -120,20 +138,21 @@ class _TopUpScreenState extends State<TopUpScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Wrap(
+                            runSpacing: 10.0,
+                            spacing: 30.0,
                             children: [
-                              InkWell(child: CoinBtnWidget(textBtn: '100')),
-                              InkWell(child: CoinBtnWidget(textBtn: '300')),
-                              InkWell(child: CoinBtnWidget(textBtn: '500')),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(child: CoinBtnWidget(textBtn: '700')),
-                              InkWell(child: CoinBtnWidget(textBtn: '1000')),
-                              InkWell(child: CoinBtnWidget(textBtn: '2000')),
+                              ...List.generate(
+                                amountList.length,
+                                (index) => InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        topup = amountList[index];
+                                      });
+                                    },
+                                    child: CoinBtnWidget(
+                                        textBtn: '${amountList[index]}')),
+                              )
                             ],
                           ),
                         ],
@@ -163,9 +182,14 @@ class _TopUpScreenState extends State<TopUpScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Input Amount', style: Theme.of(context).textTheme.headline4),
+              Text('Input Amount',
+                  style: Theme.of(context).textTheme.headline4),
               Text(
-                '\$ 300', style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700, color: kColorsRed),
+                '\$ $topup',
+                style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w700,
+                    color: kColorsRed),
               ),
             ],
           ),
@@ -173,5 +197,4 @@ class _TopUpScreenState extends State<TopUpScreen> {
       ),
     );
   }
-
 }
