@@ -1,3 +1,4 @@
+import 'package:cnc_shop/model/product_model.dart';
 import 'package:cnc_shop/service/database_service.dart';
 import 'package:cnc_shop/themes/color.dart';
 import 'package:flutter/material.dart';
@@ -59,48 +60,53 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(6),
-        child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, childAspectRatio: 0.75),
-            itemCount: 10,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.all(6),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/product-info');
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          decoration: BoxDecoration(color: kColorsRed),
-                        ),
+        child: StreamBuilder<List<Product>>(
+          stream: databaseService.getStreamListProduct(),
+          builder: (context, snapshot) {
+            return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, childAspectRatio: 0.75),
+                itemCount: snapshot.data?.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/product-info');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                              decoration: BoxDecoration(color: kColorsRed),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                            'Product name',
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            '\$price',
+                            style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
+                                color: kColorsPurple),
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                        'Product name',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        '\$price',
-                        style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                            color: kColorsPurple),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            }),
+                    ),
+                  );
+                });
+          },
+        ),
       ),
     );
   }

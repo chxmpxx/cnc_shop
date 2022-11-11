@@ -33,8 +33,14 @@ class DatabaseService {
     final snapshot = await _firebaseStore.collection('products').get();
 
     return snapshot.docs
-        .map((doc) => Product.fromMap(userMap: doc.data()))
+        .map((doc) => Product.fromMap(productMap: doc.data()))
         .toList();
-
   }
+
+  Stream<List<Product>> getStreamListProduct() => _firebaseStore
+      .collection('products')
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => Product.fromMap(productMap: doc.data()))
+          .toList());
 }

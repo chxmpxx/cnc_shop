@@ -29,14 +29,14 @@ class Product {
       required this.quantity,
       this.type});
 
-  Product.fromMap({required Map<String, dynamic> userMap})
-      : uid = userMap['uid'],
-        description = userMap['description'],
-        name = userMap['name'],
-        photoURL = userMap['photoURL'],
-        price = userMap['price'],
-        quantity = userMap['quantity'],
-        type = userMap['type'];
+  Product.fromMap({required Map<String, dynamic> productMap})
+      : uid = productMap['uid'],
+        description = productMap['description'],
+        name = productMap['name'],
+        photoURL = productMap['photoURL'],
+        price = productMap['price'],
+        quantity = productMap['quantity'],
+        type = productMap['type'];
 
   Map<String, dynamic> toMap() => {
         'uid': uid,

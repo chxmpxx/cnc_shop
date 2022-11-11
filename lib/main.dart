@@ -1,6 +1,7 @@
 import 'package:cnc_shop/route.dart';
 import 'package:cnc_shop/service/auth_service.dart';
 import 'package:cnc_shop/service/database_service.dart';
+import 'package:cnc_shop/service/storage_service.dart';
 import 'package:cnc_shop/themes/style.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<DatabaseService>(create: (_) => DatabaseService()),
+        Provider<StorageService>(create: (_) => StorageService()),
         ProxyProvider<DatabaseService, AuthService>(
             update: (_, dbService, __) => AuthService(dbService: dbService))
       ],
