@@ -60,9 +60,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(6),
-        child: StreamBuilder<List<Product>>(
+        child: StreamBuilder<List<Product?>>(
           stream: databaseService.getStreamListProduct(),
           builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('An error occure.'),
+              );
+            }
+            if (snapshot.data!.length == 0) {
+              return Center(
+                child: Text('No Product'),
+              );
+            }
             return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, childAspectRatio: 0.75),
@@ -87,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 12,
                           ),
                           Text(
-                            'Product name',
+                            '${snapshot.data![index]!.name}',
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           SizedBox(
@@ -109,5 +119,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _refresh() {
+    final databaseService =
+        Provider.of<DatabaseService>(context, listen: false);
+    databaseService.getFutureListProduct();
+    return Future.delayed(Duration(seconds: 0));
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cnc_shop/model/product_model.dart';
 import 'package:cnc_shop/service/database_service.dart';
 import 'package:cnc_shop/service/storage_service.dart';
 import 'package:cnc_shop/themes/color.dart';
+import 'package:cnc_shop/utils/showSnackBar.dart';
 import 'package:cnc_shop/widgets/input_decoration.dart';
 import 'package:cnc_shop/widgets/main_btn_widget.dart';
 import 'package:flutter/material.dart';
@@ -119,8 +121,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ],
                 )),
           ),
-          Expanded(
-              child: Padding(
+          Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: InkWell(
               onTap: () {
@@ -132,7 +133,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   isTransparent: false,
                   haveIcon: false),
             ),
-          ))
+          )
         ],
       ),
     );
@@ -338,7 +339,31 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final storageService = Provider.of<StorageService>(context, listen: false);
     String? imageUrl;
 
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+          child: CircularProgressIndicator(
+        strokeWidth: 4,
+      )),
+    );
+
     if (!formKey.currentState!.validate()) return;
     formKey.currentState!.save();
+
+    if (imageFile != null) {
+      imageUrl = await storageService.uploadProductImage(imageFile: imageFile!);
+    }
+    final newProduct = Product(
+        type: Product.getProductType(productCategory!),
+        name: productName!,
+        price: double.parse(productPrice!),
+        quantity: int.parse(productQuantity!),
+        description: productDescription!,
+        photoURL: imageUrl);
+    databaseService.addProduct(product: newProduct);
+
+    Navigator.of(context).pop();
+    showSnackBar('Add product successful.', backgroundColor: Colors.green);
+    Navigator.of(context).pop();
   }
 }

@@ -40,7 +40,16 @@ class DatabaseService {
   Stream<List<Product>> getStreamListProduct() => _firebaseStore
       .collection('products')
       .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Product.fromMap(productMap: doc.data()))
-          .toList());
+      .map((snapshot) => snapshot.docs.map((doc) {
+            // print(doc.data());
+            return Product.fromMap(productMap: doc.data());
+          }).toList());
+
+  Future<void> addProduct({required product}) async {
+    final docProduct = _firebaseStore.collection('products').doc();
+
+    final Map<String, dynamic> productInfo = product.toMap();
+
+    await docProduct.set(productInfo);
+  }
 }

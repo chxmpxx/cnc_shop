@@ -1,4 +1,4 @@
-enum ProductType { pen, book, eraser }
+enum ProductType { pen, book, paper, eraser, marker, folder, unknown }
 
 class Product {
   final String? uid;
@@ -17,6 +17,14 @@ class Product {
         return ProductType.book;
       case 'eraser':
         return ProductType.eraser;
+      case 'paper':
+        return ProductType.paper;
+      case 'marker':
+        return ProductType.marker;
+      case 'folder':
+        return ProductType.folder;
+      default:
+        return ProductType.unknown;
     }
   }
 
@@ -30,13 +38,13 @@ class Product {
       this.type});
 
   Product.fromMap({required Map<String, dynamic> productMap})
-      : uid = productMap['uid'],
-        description = productMap['description'],
+      : uid = productMap['uid'] ?? '',
+        description = productMap['description'] ?? '',
         name = productMap['name'],
-        photoURL = productMap['photoURL'],
-        price = productMap['price'],
+        photoURL = productMap['photoURL'] ?? '',
+        price = productMap['price'].toDouble(),
         quantity = productMap['quantity'],
-        type = productMap['type'];
+        type = getProductType(productMap['type']);
 
   Map<String, dynamic> toMap() => {
         'uid': uid,
@@ -45,6 +53,11 @@ class Product {
         'photoURL': photoURL ?? '',
         'price': price,
         'quantity': quantity,
-        'type': type
+        'type': type?.name.toString()
       };
+
+  @override
+  String toString() {
+    return 'Product{uid: $uid, description: $description, name: $name, photoURL: $photoURL, price: $price, quantity: $quantity, type: $type}';
+  }
 }
